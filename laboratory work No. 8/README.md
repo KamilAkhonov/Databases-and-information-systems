@@ -3,7 +3,7 @@
 Создаем базу данных с помощью терминала MongoShell
 
 Создадим коллекцию students: 
-```Mongo
+```MongoDB
 db.createCollection("students", {
    validator: {
       $jsonSchema: {
