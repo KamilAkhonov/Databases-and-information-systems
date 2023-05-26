@@ -75,7 +75,7 @@ CREATE INDEX idx_lessons_ClassroomID ON lessons (ClassroomID);
 ```
 Модифицировать таблицу в своей БД, добавив партицирование.
 
-```sql
+```Mysql
 CREATE TABLE lessons_partitioned (
     ID INT NOT NULL,
     DayOfWeek VARCHAR(10),
@@ -97,7 +97,7 @@ PARTITION BY LIST (GroupID)
 ```
 Продемонстрировать, что это не «ломает» запросов.
 
-```sql
+```Mysql
 SELECT * FROM lessons_partitioned partition(p1) where ClassroomID = 10;
 ```
 
