@@ -1,12 +1,11 @@
 # Report | Отчет
 
-1. Установить отладчик и продемонстрировать выполнение процедуры по шагам
-2. Сгенерировать большие (>100000 записей) таблицы со случайными данными – числами и строками (с помощью хранимой процедуры)
-3. Создать индексы (на отдельные поля и составные)
-4. Сравнить время заполнения таблиц с индексами и без них.
-5. Сравнить время выполнения запросов (с условием отбора и с сортировкой) с индексами и без них.
-6. Модифицировать таблицу в своей БД, добавив партицирование.
-7. Продемонстрировать, что это не «ломает» запросов.
+1. Сгенерировать большие (>100000 записей) таблицы со случайными данными – числами и строками (с помощью хранимой процедуры)
+2. Создать индексы (на отдельные поля и составные)
+3. Сравнить время заполнения таблиц с индексами и без них.
+4. Сравнить время выполнения запросов (с условием отбора и с сортировкой) с индексами и без них.
+5. Модифицировать таблицу в своей БД, добавив партицирование.
+6. Продемонстрировать, что это не «ломает» запросов.
 
 Сгенерировать большие (>100000 записей) таблицы со случайными данными – числами и строками (с помощью хранимой процедуры)
 ```Mysql
@@ -66,7 +65,40 @@ CREATE INDEX idx_lessons_ClassroomID ON lessons (ClassroomID);
 | 3 | 87 | 22:27:36 | select * from lessons_test2 ORDER BY GroupID,ClassroomID | 350000 row(s) returned | 0.640 sec / 0.235 sec |
 | 3 | 88 | 22:27:39 | select * from lessons_test3 ORDER BY GroupID,ClassroomID | 350000 row(s) returned | 0.672 sec / 0.297 sec |
 | 3 | 102 | 22:31:56 | select * from lessons_test FORCE INDEX (idx_lessons_test_GroupID_ClassroomID) where (ClassroomID between 5 and 10) AND (GroupID = 5) ORDER BY GroupID,ClassroomID | 27859 row(s) returned | 0.000 sec / 0.110 sec |
+
+
 | 3 | 103 | 22:31:57 | select * from lessons_test2 FORCE INDEX (idx_lessons_test2_ClassroomID) where (ClassroomID between 5 and 10) AND (GroupID = 5) ORDER BY GroupID,ClassroomID | 28004 row(s) returned | 0.000 sec / 0.438 sec |
 | 3 | 104 | 22:31:57 | select * from lessons_test3 where (ClassroomID between 5 and 10) AND (GroupID = 5) ORDER BY GroupID,ClassroomID | 28032 row(s) returned | 0.204 sec / 0.015 sec |
 
 Из таблицы видно, что использование индексов позволяет выбирать данные быстрее, сортировать запросы также можно быстрее при использования индексов. Но для таблиц со случайными данными размером >100000 записей использование индексов не дает существенной выгоды при заполнении таблиц, их преимущества проявляются при выполнении запросов. Составные индексы работают еще более эффективно, чем сингл-индексы.
+
+```
+Модифицировать таблицу в своей БД, добавив партицирование.
+
+```sql
+CREATE TABLE lessons_partitioned (
+    ID INT NOT NULL,
+    DayOfWeek VARCHAR(10),
+    StartTime TIME,
+    EndTime TIME,
+    ClassroomID INT,
+    GroupID INT,
+    DisciplineID INT,
+    TeacherID INT
+)
+PARTITION BY LIST (GroupID)
+(
+    PARTITION p1 VALUES IN (1),
+    PARTITION p2 VALUES IN (2),
+    PARTITION p3 VALUES IN (3),
+    PARTITION p4 VALUES IN (4),
+    PARTITION p5 VALUES IN (5)
+);
+```
+Продемонстрировать, что это не «ломает» запросов.
+
+```sql
+SELECT * FROM lessons_partitioned partition(p1) where ClassroomID = 10;
+```
+
+В результате запроса будут получены 20 строк, что говорит о том, что добавление партиций не повлияло на работу запросов к таблице.
