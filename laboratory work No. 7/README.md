@@ -66,7 +66,9 @@ CREATE INDEX idx_lessons_ClassroomID ON lessons (ClassroomID);
 
 | 3 | 98 | 22:30:25 | `select * from lessons_test FORCE INDEX (idx_lessons_test_GroupID_ClassroomID) where (ClassroomID between 5 and 10) AND (GroupID = 5)` | 27859 row(s) returned | 0.000 sec / 0.109 sec |
 | --- | --- | --- | --- | --- | --- | 
+
 | 3 | 99 | 22:30:25 | `select * from lessons_test2 FORCE INDEX (idx_lessons_test2_ClassroomID) where (ClassroomID between 5 and 10) AND (GroupID = 5) ` | 28004 row(s) returned | 0.000 sec / 0.437 sec |
 | --- | --- | --- | --- | --- | --- | 
+
 | 3 | 100 | 22:30:26 | `select * from lessons_test3 where (ClassroomID between 5 and 10) AND (GroupID = 5)` | 28032 row(s) returned | 0.000 sec / 0.187 sec |
 | --- | --- | --- | --- | --- | --- | 
