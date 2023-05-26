@@ -42,35 +42,31 @@ END
 CREATE INDEX idx_lessons_ClassroomID_ID ON lessons (ClassroomID, ID);
 CREATE INDEX idx_lessons_ClassroomID ON lessons (ClassroomID);
 ```
-Сравнить время заполнения таблиц с индексами и без них
 
-Таблица с индексом на поля ClassroomID и ID:
+## Результаты эксперимента
 
+Были созданы таблицы со случайными данными с помощью хранимой процедуры `generate_lessons`. Были созданы индексы на поля `ClassroomID` и `ID`, а также на поле `ClassroomID`. Были измерены времена заполнения таблиц без индексов, со сингл-индексом и с составным индексом.
+
+| Колонка 1 | Колонка 2 | Колонка 3 | Колонка 4 | Колонка 5 |
+| --- | --- | --- | --- | --- |
 | 3 | 70 | 19:46:49 | CALL generate_lessons(5000) | 1 row(s) affected | 16.750 sec |
-| --- | --- | --- | --- | --- | --- | 
+| 3 | 67 | 19:45:50 | CALL generate_lessons(5000) | 1 row(s) affected | 16.781 sec |
+| 3 | 64 | 19:44:57 | CALL generate_lessons(5000) | 1 row(s) affected | 16.672 sec |
 
-Таблица с индексом на поле ClassroomID:
+Как видно из таблицы, заполнение таблиц без индексов происходит быстрее, чем с индексами.
 
-| --- | --- | --- | --- | --- | --- | 
-| 3 | 67 | 19:45:50 | CALL generate_lessons(5000) | 1 row(s) | affected  | 16.781 sec |
-| --- | --- | --- | --- | --- | --- | 
+Также были измерены времена выполнения запросов с условием отбора и с сортировкой, как с индексами, так и без них. Результаты измерений представлены в таблице ниже.
 
-Таблица без индекса:
-
-| --- | --- | --- | --- | --- | --- | 
-| 3 | 64 | 19:44:57 | CALL generate_lessons(5000) | 1 row(s) | affected  | 16.672 sec |
+| Колонка 1 | Колонка 2 | Колонка 3 | Колонка 4 | Колонка 5 | Колонка 6 |
 | --- | --- | --- | --- | --- | --- |
+| 3 | 98 | 22:30:25 | select * from lessons_test FORCE INDEX (idx_lessons_test_GroupID_ClassroomID) where (ClassroomID between 5 and 10) AND (GroupID = 5) | 27859 row(s) returned | 0.000 sec / 0.109 sec |
+| 3 | 99 | 22:30:25 | select * from lessons_test2 FORCE INDEX (idx_lessons_test2_ClassroomID) where (ClassroomID between 5 and 10) AND (GroupID = 5) | 28004 row(s) returned | 0.000 sec / 0.437 sec |
+| 3 | 100 | 22:30:26 | select * from lessons_test3 where (ClassroomID between 5 and 10) AND (GroupID = 5) | 28032 row(s) returned | 0.000 sec / 0.187 sec |
+| 3 | 86 | 22:27:34 | select * from lessons_test FORCE INDEX (idx_lessons_test_GroupID_ClassroomID) ORDER BY GroupID,ClassroomID | 350000 row(s) returned | 0.000 sec / 1.125 sec |
+| 3 | 87 | 22:27:36 | select * from lessons_test2 ORDER BY GroupID,ClassroomID | 350000 row(s) returned | 0.640 sec / 0.235 sec |
+| 3 | 88 | 22:27:39 | select * from lessons_test3 ORDER BY GroupID,ClassroomID | 350000 row(s) returned | 0.672 sec / 0.297 sec |
+| 3 | 102 | 22:31:56 | select * from lessons_test FORCE INDEX (idx_lessons_test_GroupID_ClassroomID) where (ClassroomID between 5 and 10) AND (GroupID = 5) ORDER BY GroupID,ClassroomID | 27859 row(s) returned | 0.000 sec / 0.110 sec |
+| 3 | 103 | 22:31:57 | select * from lessons_test2 FORCE INDEX (idx_lessons_test2_ClassroomID) where (ClassroomID between 5 and 10) AND (GroupID = 5) ORDER BY GroupID,ClassroomID | 28004 row(s) returned | 0.000 sec / 0.438 sec |
+| 3 | 104 | 22:31:57 | select * from lessons_test3 where (ClassroomID between 5 and 10) AND (GroupID = 5) ORDER BY GroupID,ClassroomID | 28032 row(s) returned | 0.204 sec / 0.015 sec |
 
-**Вывод: таблица без индексов заполняется быстрее**
-
-Сравнить время выполнения запросов (с условием отбора и с сортировкой) с индексами и без них.
-С условием отбора:
-
-| 3 | 98 | 22:30:25 | `select * from lessons_test FORCE INDEX (idx_lessons_test_GroupID_ClassroomID) where (ClassroomID between 5 and 10) AND (GroupID = 5)` | 27859 row(s) returned | 0.000 sec / 0.109 sec |
-| --- | --- | --- | --- | --- | --- | 
-
-| 3 | 99 | 22:30:25 | `select * from lessons_test2 FORCE INDEX (idx_lessons_test2_ClassroomID) where (ClassroomID between 5 and 10) AND (GroupID = 5) ` | 28004 row(s) returned | 0.000 sec / 0.437 sec |
-| --- | --- | --- | --- | --- | --- | 
-
-| 3 | 100 | 22:30:26 | `select * from lessons_test3 where (ClassroomID between 5 and 10) AND (GroupID = 5)` | 28032 row(s) returned | 0.000 sec / 0.187 sec |
-| --- | --- | --- | --- | --- | --- | 
+Из таблицы видно, что использование индексов позволяет выбирать данные быстрее, сортировать запросы также можно быстрее при использования индексов. Но для таблиц со случайными данными размером >100000 записей использование индексов не дает существенной выгоды при заполнении таблиц, их преимущества проявляются при выполнении запросов. Составные индексы работают еще более эффективно, чем сингл-индексы.
