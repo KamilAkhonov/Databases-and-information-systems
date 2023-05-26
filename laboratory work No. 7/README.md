@@ -65,14 +65,12 @@ CREATE INDEX idx_lessons_ClassroomID ON lessons (ClassroomID);
 | 3 | 87 | 22:27:36 | select * from lessons_test2 ORDER BY GroupID,ClassroomID | 350000 row(s) returned | 0.640 sec / 0.235 sec |
 | 3 | 88 | 22:27:39 | select * from lessons_test3 ORDER BY GroupID,ClassroomID | 350000 row(s) returned | 0.672 sec / 0.297 sec |
 | 3 | 102 | 22:31:56 | select * from lessons_test FORCE INDEX (idx_lessons_test_GroupID_ClassroomID) where (ClassroomID between 5 and 10) AND (GroupID = 5) ORDER BY GroupID,ClassroomID | 27859 row(s) returned | 0.000 sec / 0.110 sec |
-
-
 | 3 | 103 | 22:31:57 | select * from lessons_test2 FORCE INDEX (idx_lessons_test2_ClassroomID) where (ClassroomID between 5 and 10) AND (GroupID = 5) ORDER BY GroupID,ClassroomID | 28004 row(s) returned | 0.000 sec / 0.438 sec |
 | 3 | 104 | 22:31:57 | select * from lessons_test3 where (ClassroomID between 5 and 10) AND (GroupID = 5) ORDER BY GroupID,ClassroomID | 28032 row(s) returned | 0.204 sec / 0.015 sec |
 
 Из таблицы видно, что использование индексов позволяет выбирать данные быстрее, сортировать запросы также можно быстрее при использования индексов. Но для таблиц со случайными данными размером >100000 записей использование индексов не дает существенной выгоды при заполнении таблиц, их преимущества проявляются при выполнении запросов. Составные индексы работают еще более эффективно, чем сингл-индексы.
 
-```
+
 Модифицировать таблицу в своей БД, добавив партицирование.
 
 ```Mysql
