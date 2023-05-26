@@ -317,3 +317,18 @@ db.lessons.insertMany([
     TeacherID: 2
   }])
 ```
+Два запроса:
+1)Поиск всех занятий, которые проходят в понедельник, затем группировка их по TeacherID и подсчитывание количества занятий для каждого преподавателя. 
+
+```Shell
+   db.lessons.aggregate([
+  { $match: { DayOfWeek: "Monday" } },
+  { $group: { _id: "$TeacherID", total: { $sum: 1 } } }
+])
+```
+2)Расчет среднего времени начала занятий в каждый учебный день
+```Shell
+db.lessons.aggregate([
+  { $group: { _id: "$DayOfWeek", avg_start: { $avg: { $hour: "$Start_Time" } } } }
+])
+```
