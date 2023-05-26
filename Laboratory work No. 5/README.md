@@ -34,7 +34,9 @@ class MysqlCon{
 }
 ```
 Результат:
+
 ![image](https://github.com/Lszoa/Databases-and-information-systems/assets/115508876/e4a52bba-31b5-44b3-8109-2c14937eef2e)
+
 ```Java
 // Объект хранимой процедуры
 CallableStatement callableStatement = con.prepareCall("{call get_disciplines_by_group(?)}");
@@ -56,7 +58,9 @@ resultSet.close();
 callableStatement.close();
 ```
 Результат
+
 ![image](https://github.com/Lszoa/Databases-and-information-systems/assets/115508876/7ce98524-e458-4254-8b4e-2a68e3d8f2ad)
+
 
 ```Java
 // Вызов функции
@@ -69,4 +73,6 @@ System.out.println(result);
 stmt.close();
 ```
 Результат:
+
 ![image](https://github.com/Lszoa/Databases-and-information-systems/assets/115508876/ca7df607-e7b6-4fb8-9c2b-c200236dd5e6)
+
