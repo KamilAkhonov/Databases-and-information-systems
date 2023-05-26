@@ -26,7 +26,6 @@ db.createCollection("students", {
       }
    }
 })
-```
 
 Создадим коллекцию disciplines:
 db.createCollection("disciplines", {
@@ -317,3 +316,4 @@ db.lessons.insertMany([
     DisciplineID: 7,
     TeacherID: 2
   }])
+```
