@@ -46,7 +46,7 @@ CREATE INDEX idx_lessons_ClassroomID ON lessons (ClassroomID);
 
 Таблица с индексом на поля ClassroomID и ID:
 
-| 3 |	70	| 19:46:49	| CALL generate_lessons(5000) |	1 row(s) | affected |	16.750 sec |
+| 3 | 70 | 19:46:49 | CALL generate_lessons(5000) | 1 row(s) affected | 16.750 sec |
 
 Таблица с индексом на поле ClassroomID:
 
