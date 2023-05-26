@@ -51,21 +51,22 @@ CREATE INDEX idx_lessons_ClassroomID ON lessons (ClassroomID);
 
 Таблица с индексом на поле ClassroomID:
 
-| 3	| 67	| 19:45:50	| CALL generate_lessons(5000)	| 1 row(s) | affected	| 16.781 sec |
+| 3 | 67 | 19:45:50 | CALL generate_lessons(5000) | 1 row(s) | affected	| 16.781 sec |
 | --- | --- | --- | --- | --- | --- | 
 
 Таблица без индекса:
 
-| 3	| 64	| 19:44:57	| CALL generate_lessons(5000)	| 1 row(s) | affected	| 16.672 sec |
+| 3 | 64 | 19:44:57 | CALL generate_lessons(5000) | 1 row(s) | affected	| 16.672 sec |
 | --- | --- | --- | --- | --- | --- | 
 
 **Вывод: таблица без индексов заполняется быстрее**
 
 Сравнить время выполнения запросов (с условием отбора и с сортировкой) с индексами и без них.
 С условием отбора:
-|3	|98|	22:30:25|	```Mysql select * from lessons_test FORCE INDEX (idx_lessons_test_GroupID_ClassroomID) where (ClassroomID between 5 and 10) AND (GroupID = 5)```|	27859 row(s) returned	| 0.000 sec / 0.109 sec |
-| --- | --- | --- | --- | --- | --- | 
+
+|3 |98|	22:30:25| ```Mysql 
+select * from lessons_test FORCE INDEX (idx_lessons_test_GroupID_ClassroomID) where (ClassroomID between 5 and 10) AND (GroupID = 5)
+```| 27859 row(s) returned | 0.000 sec / 0.109 sec |
 |3|	99|	22:30:25|	```Mysql select * from lessons_test2 FORCE INDEX (idx_lessons_test2_ClassroomID) where (ClassroomID between 5 and 10) AND (GroupID = 5)```	|28004 row(s) returned	| 0.000 sec / 0.437 sec|
-| --- | --- | --- | --- | --- | --- | 
 | 3 |	100	| 22:30:26	| ```Mysql select * from lessons_test3 where (ClassroomID between 5 and 10) AND (GroupID = 5)```	|28032 row(s) returned|	0.000 sec / 0.187 sec|
 | --- | --- | --- | --- | --- | --- | 
