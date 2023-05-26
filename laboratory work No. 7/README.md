@@ -45,11 +45,17 @@ CREATE INDEX idx_lessons_ClassroomID ON lessons (ClassroomID);
 Сравнить время заполнения таблиц с индексами и без них
 
 Таблица с индексом на поля ClassroomID и ID:
+
 | 3 |	70	| 19:46:49	| CALL generate_lessons(5000) |	1 row(s) | affected |	16.750 sec |
+
 Таблица с индексом на поле ClassroomID:
+
 | 3	| 67	| 19:45:50	| CALL generate_lessons(5000)	| 1 row(s) | affected	| 16.781 sec |
+
 Таблица без индекса:
+
 | 3	| 64	| 19:44:57	| CALL generate_lessons(5000)	| 1 row(s) | affected	| 16.672 sec |
+
 **Вывод: таблица без индексов заполняется быстрее**
 
 Сравнить время выполнения запросов (с условием отбора и с сортировкой) с индексами и без них.
